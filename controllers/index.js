@@ -6,7 +6,7 @@ var index = async (ctx, next) => {
             <p><input type="submit" value="Submit"></p>
         </form>`;
 };
-
+	
 
 
 module.exports = {
