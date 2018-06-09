@@ -11,5 +11,6 @@ var signin = async (ctx, next) => {
     }
 };
 module.exports = {
-    'POST /signin': signin
+    'POST /signin': signin,
+    'GET /signin': signin //post/get 都可以请求
 };
