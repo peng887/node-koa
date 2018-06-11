@@ -20,7 +20,7 @@ var login = async (ctx, next) => {
 	if(result==""){
 		ctx.body={
 			success:false,
-			message:"用户名错误"
+			message:"用户名不存在"
 		}
 	}else{
 		let dbUserName = result[0].userName;
