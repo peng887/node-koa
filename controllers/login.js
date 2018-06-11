@@ -17,14 +17,27 @@ var login = async (ctx, next) => {
 	}
 	let result=await query();
 
-	let dbUserName = result[0].userName;
-	let dbPassWord = result[0].passWord;
-	if(userName==dbUserName&&passWord==dbPassWord){
+	if(result==""){
 		ctx.body={
-			code:200,
-			message:"登陆成功"
+			success:false,
+			message:"用户名错误"
 		}
+	}else{
+		let dbUserName = result[0].userName;
+		let dbPassWord = result[0].passWord;
+ 		if(userName==dbUserName&&passWord!=dbPassWord){
+			ctx.body={
+				success:false,
+				message:"密码错误"
+			}
+		}else	if(userName==dbUserName&&passWord==dbPassWord){
+	 		ctx.body={
+				success:true,
+				message:"登录成功"
+	 		}
+	 	}
 	}
+
 };
 
 module.exports = {
