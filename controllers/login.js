@@ -1,25 +1,32 @@
 var login = async (ctx, next) => {
 	const monk = require('monk');
-	const db = monk("localhost/test")
+	const db = monk("localhost/admin")
 
-	let query=()=>{
+	let requestData = ctx.request.body;
+	let userName = requestData.userName;
+	let passWord = requestData.passWord;
+
+	let query = ()=>{
 		return new Promise((resolve,reject)=>{
-			db.get('userName').find({}).then((doc)=>{
+			db.get("userInfo").find({userName}).then((doc)=>{
 				if(doc){
 					resolve(doc)
 				}
 			})
 		})
 	}
-	db.get("userName").insert([
-			{userName:"ccc"},
-			{userName:"bbb"}
-	])
 	let result=await query();
-	ctx.body=result;
 
+	let dbUserName = result[0].userName;
+	let dbPassWord = result[0].passWord;
+	if(userName==dbUserName&&passWord==dbPassWord){
+		ctx.body={
+			code:200,
+			message:"登陆成功"
+		}
+	}
 };
 
 module.exports = {
-    'GET /api/login': login
+    'POST /api/login': login
 };
