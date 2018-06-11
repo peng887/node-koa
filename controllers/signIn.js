@@ -1,4 +1,4 @@
-var login = async (ctx, next) => {
+var signIn = async (ctx, next) => {
 	const monk = require('monk');
 	const db = monk("localhost/admin")
 
@@ -41,5 +41,5 @@ var login = async (ctx, next) => {
 };
 
 module.exports = {
-    'POST /api/login': login
+    'POST /api/signIn': signIn
 };
