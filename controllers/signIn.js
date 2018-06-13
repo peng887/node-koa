@@ -1,24 +1,25 @@
 var signIn = async (ctx, next) => {
-	const monk = require('monk');
-	const db = monk("localhost/admin")
+	const MongoClient = require('mongodb').MongoClient
 	const crypto = require('crypto');
 	const secret = '29aisf928af9poir9284wqefuass'
 	const setToken = token => {
 		let hash = crypto.createHmac('sha256', secret).update(token).digest('hex')
 		return hash
 	}
-
+	const time = new Date().getTime()
 	const requestData = ctx.request.body
 	const userName = requestData.userName
 	const passWord = requestData.passWord
-	const time = new Date().getTime()
 
 	let query = ()=>{
 		return new Promise((resolve,reject)=>{
-			db.get("userInfo").find({userName}).then((doc)=>{
-				if(doc){
-					resolve(doc)
-				}
+			MongoClient.connect('mongodb://localhost:27017/admin',(err,db) => {
+				db.collection('userInfo').find({userName:userName}).toArray((err,res) => {
+					if(res){
+						resolve(res)
+					}
+				})
+				db.close()
 			})
 		})
 	}
@@ -40,6 +41,10 @@ var signIn = async (ctx, next) => {
 			}
 		}else	if(userName==dbUserName&&passWord==dbPassWord){
 			let token = setToken(dbUserId+'&'+dbUserName+'&'+time)
+			MongoClient.connect('mongodb://localhost:27017/admin',(err,db) => {
+				db.collection('userInfo').update({userName:userName},{$set:{token:token}})
+				db.close()
+			})
 	 		ctx.body={
 				success:true,
 				message:"登录成功",
@@ -47,9 +52,8 @@ var signIn = async (ctx, next) => {
 	 		}
 	 	}
 	}
-
-};
+}
 
 module.exports = {
     'POST /api/signIn': signIn
-};
+}
